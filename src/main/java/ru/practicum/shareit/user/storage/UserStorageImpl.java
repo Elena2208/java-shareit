@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 @Component
 public class UserStorageImpl implements UserStorage {
     private final Map<Long, User> users = new HashMap<>();
@@ -22,15 +23,8 @@ public class UserStorageImpl implements UserStorage {
 
     @Override
     public User update(User user) {
-        User updateUser = users.get(user.getId());
-        if (user.getName() != null && !user.getName().isEmpty()) {
-            updateUser.setName(user.getName());
-        }
-        if (user.getEmail() != null && !user.getEmail().isEmpty()) {
-            updateUser.setEmail(user.getEmail());
-        }
-        users.put(updateUser.getId(), updateUser);
-        return users.get(updateUser.getId());
+        users.put(user.getId(), user);
+        return users.get(user.getId());
     }
 
     @Override
