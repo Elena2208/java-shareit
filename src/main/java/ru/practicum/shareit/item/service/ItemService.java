@@ -12,6 +12,7 @@ public interface ItemService {
     List<ItemDto> getAll(long userId);
 
     ItemDto update(ItemDto itemDto, long id, long userId);
+
     void delete(long id);
 
     List<ItemDto> search(String text);

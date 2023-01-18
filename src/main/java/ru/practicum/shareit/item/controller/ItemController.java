@@ -17,7 +17,6 @@ public class ItemController {
     private final ItemService itemService;
     private final String HEADER_HTTP = "X-Sharer-User-Id";
 
-
     @GetMapping
     public List<ItemDto> getAll(@RequestHeader(HEADER_HTTP) long userId) {
         return itemService.getAll(userId);
@@ -37,7 +36,6 @@ public class ItemController {
     public void deleteById(@PathVariable long id) {
         itemService.delete(id);
     }
-
 
     @GetMapping("/{id}")
     public ItemDto getId(@PathVariable long id) {
