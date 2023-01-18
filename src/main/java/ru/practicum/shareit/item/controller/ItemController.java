@@ -14,20 +14,20 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ItemController {
     private final ItemService itemService;
-    private final String header_title = "X-Sharer-User-Id";
+    private final String headerTitle = "X-Sharer-User-Id";
 
     @GetMapping
-    public List<ItemDto> getAll(@RequestHeader(header_title) long userId) {
+    public List<ItemDto> getAll(@RequestHeader(headerTitle) long userId) {
         return itemService.getAll(userId);
     }
 
     @PostMapping
-    public ItemDto create(@Valid @RequestBody ItemDto itemDto, @RequestHeader(header_title) long userId) {
+    public ItemDto create(@Valid @RequestBody ItemDto itemDto, @RequestHeader(headerTitle) long userId) {
         return itemService.create(itemDto, userId);
     }
 
     @PatchMapping("/{id}")
-    public ItemDto patch(@Valid @RequestBody ItemDto itemDto, @PathVariable long id, @RequestHeader(header_title) long userId) {
+    public ItemDto patch(@Valid @RequestBody ItemDto itemDto, @PathVariable long id, @RequestHeader(headerTitle) long userId) {
         return itemService.update(itemDto, id, userId);
     }
 
