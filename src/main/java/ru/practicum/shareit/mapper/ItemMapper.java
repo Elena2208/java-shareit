@@ -17,7 +17,7 @@ public class ItemMapper {
                 item.getOwner(), item.getRequest());
     }
 
-    public static List<ItemDto> toListItemDto(List<Item> items){
+    public static List<ItemDto> toListItemDto(List<Item> items) {
         return items
                 .stream()
                 .map(i -> ItemMapper.toItemDto(i))
