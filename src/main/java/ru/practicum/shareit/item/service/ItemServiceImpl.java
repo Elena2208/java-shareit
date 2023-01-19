@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.AlreadyExistsException;
 import ru.practicum.shareit.exception.NotFoundException;
@@ -11,7 +12,9 @@ import ru.practicum.shareit.item.storage.ItemStorage;
 import ru.practicum.shareit.mapper.ItemMapper;
 
 import ru.practicum.shareit.user.storage.UserStorage;
+
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -58,17 +61,17 @@ public class ItemServiceImpl implements ItemService {
 
 
     private void validateItem(Item item) {
-        if (item.getName().isEmpty() || item.getName().isBlank() || item.getName() == null) {
+        if (item.getName() == null || StringUtils.isEmpty(item.getName()) || StringUtils.isBlank(item.getName())) {
             throw new ValidationException("The field cannot be empty.");
         }
-        if (item.getDescription() == null || item.getDescription().isEmpty() || item.getDescription().isBlank()) {
+        if (item.getDescription() == null || StringUtils.isEmpty(item.getDescription())
+                || StringUtils.isBlank(item.getDescription())) {
             throw new ValidationException("The field cannot be empty.");
         }
         if (item.getAvailable() == null) {
             throw new ValidationException("The field cannot be empty.");
         }
     }
-
 
     public ItemDto update(ItemDto itemDto, long id, long userId) {
         userIdValidation(userId);
@@ -77,15 +80,9 @@ public class ItemServiceImpl implements ItemService {
             throw new NotFoundException("This is not the owner of the item.");
         }
         Item newItem = ItemMapper.toItem(itemDto);
-        if (newItem.getName() != null) {
-            oldItem.setName(newItem.getName());
-        }
-        if (newItem.getDescription() != null) {
-            oldItem.setDescription(newItem.getDescription());
-        }
-        if (newItem.getAvailable() != null) {
-            oldItem.setAvailable(newItem.getAvailable());
-        }
+        Optional.ofNullable(newItem.getName()).ifPresent(m -> oldItem.setName(m));
+        Optional.ofNullable(newItem.getDescription()).ifPresent(m -> oldItem.setDescription(m));
+        Optional.ofNullable(newItem.getAvailable()).ifPresent(m -> oldItem.setAvailable(m));
         return ItemMapper.toItemDto(itemStorage.update(oldItem));
     }
 

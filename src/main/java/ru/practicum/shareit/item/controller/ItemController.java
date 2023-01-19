@@ -1,6 +1,8 @@
 package ru.practicum.shareit.item.controller;
 
+import com.fasterxml.jackson.core.PrettyPrinter;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
@@ -43,10 +45,8 @@ public class ItemController {
 
     @GetMapping("/search")
     public List<ItemDto> findItemByParams(@RequestParam String text) {
-        if (text.isBlank()) {
-            return List.of();
-        } else {
-            return itemService.search(text);
-        }
+        List<ItemDto> listItemDto = (text == null || StringUtils.isBlank(text) || StringUtils.isEmpty(text))
+                ? List.of() : itemService.search(text);
+        return listItemDto;
     }
 }
