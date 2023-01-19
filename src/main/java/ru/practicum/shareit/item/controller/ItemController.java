@@ -1,6 +1,5 @@
 package ru.practicum.shareit.item.controller;
 
-import com.fasterxml.jackson.core.PrettyPrinter;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
