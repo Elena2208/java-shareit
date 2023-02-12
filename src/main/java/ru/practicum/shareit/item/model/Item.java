@@ -16,13 +16,13 @@ import javax.persistence.*;
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="item_id")
+    @Column(name = "item_id")
     private long id;
-    @Column(name="item_name", nullable = false)
+    @Column(name = "item_name", nullable = false)
     private String name;
-    @Column(name="item_description", nullable = false)
+    @Column(name = "item_description", nullable = false)
     private String description;
-    @Column(name="is_available", nullable = false)
+    @Column(name = "is_available", nullable = false)
     private Boolean available;
     @ManyToOne
     @JoinColumn(name = "owner_id", referencedColumnName = "user_id")
