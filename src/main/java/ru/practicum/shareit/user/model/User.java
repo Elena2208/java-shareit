@@ -16,10 +16,10 @@ import javax.persistence.*;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="user_id")
+    @Column(name = "user_id")
     private long id;
-    @Column(name="user_name",nullable = false)
-    private String  name;
-    @Column(name="user_email", nullable = false, unique = true)
+    @Column(name = "user_name", nullable = false)
+    private String name;
+    @Column(name = "user_email", nullable = false, unique = true)
     private String email;
 }

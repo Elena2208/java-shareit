@@ -19,6 +19,7 @@ public class ItemDtoDate {
     private ForItemBookingDto lastBooking;
     private ForItemBookingDto nextBooking;
     private List<CommentDto> comments;
+
     @Data
     public static class ForItemBookingDto {
         private final Long id;

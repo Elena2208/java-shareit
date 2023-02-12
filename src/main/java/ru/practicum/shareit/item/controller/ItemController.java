@@ -16,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ItemController {
     private final ItemService itemService;
-    private final String HEADER_USER_ID = "X-Sharer-User-Id";
+    private static final String HEADER_USER_ID = "X-Sharer-User-Id";
 
     @PostMapping
     public ItemDto addItem(@Valid @RequestBody ItemDto itemDto,
@@ -34,13 +34,13 @@ public class ItemController {
     @GetMapping("/{itemId}")
     public ItemDtoDate getItemEachUser(@PathVariable long itemId,
                                        @RequestHeader(HEADER_USER_ID) long userId) {
-        return itemService.getItemUser(itemId,userId);
+        return itemService.getItemUser(itemId, userId);
 
     }
 
     @GetMapping
     public List<ItemDtoDate> getItemOwnerUser(@RequestHeader(HEADER_USER_ID) long userId) {
-     return    itemService.getAllItemByUser(userId);
+        return itemService.getAllItemByUser(userId);
     }
 
     @GetMapping("/search")

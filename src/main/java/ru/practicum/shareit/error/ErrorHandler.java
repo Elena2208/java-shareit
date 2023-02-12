@@ -30,6 +30,7 @@ public class ErrorHandler {
         log.info("Возникла ошибка с кодом 404", e.getMessage(), e);
         return new ErrorResponse(e.getMessage());
     }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handlerNotFoundException(final AlreadyExistsException e) {

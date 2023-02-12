@@ -76,10 +76,11 @@ public class BookingServiceImpl implements BookingService {
         Sort sort = Sort.by(Sort.Direction.DESC, "start");
         switch (state) {
             case ALL:
-                return BookingMapper.toListBookingDto(bookingRepository.findBookingByBookerIdOrderByStartDesc(bookerId));
+                return BookingMapper.toListBookingDto
+                        (bookingRepository.findBookingByBookerIdOrderByStartDesc(bookerId));
             case CURRENT:
-                return BookingMapper.toListBookingDto(bookingRepository.
-                        findBookingsCurrentForBooker(bookerId, LocalDateTime.now(), sort));
+                return BookingMapper.toListBookingDto
+                        (bookingRepository.findBookingsCurrentForBooker(bookerId, LocalDateTime.now(), sort));
             case PAST:
                 return BookingMapper.toListBookingDto
                         (bookingRepository.findBookingsPastForBooker(bookerId, LocalDateTime.now(), sort));
@@ -89,7 +90,6 @@ public class BookingServiceImpl implements BookingService {
             case WAITING:
                 return BookingMapper.toListBookingDto
                         (bookingRepository.findBookingsByStatusAndBookerId(bookerId, BookingStatus.WAITING));
-
             case REJECTED:
                 return BookingMapper.toListBookingDto
                         (bookingRepository.findBookingsByStatusAndBookerId(bookerId, BookingStatus.REJECTED));

@@ -16,13 +16,12 @@ import java.util.List;
 public class BookingController {
     private final BookingService bookingService;
 
-    private final String HEADER_USER_ID = "X-Sharer-User-Id";
+    private static final  String HEADER_USER_ID = "X-Sharer-User-Id";
 
     @PostMapping
     public BookingDto create(@Valid @RequestBody BookingDtoRequest bookingDtoRequest,
                              @RequestHeader(HEADER_USER_ID) long userId) {
         return bookingService.addBooking(bookingDtoRequest, userId);
-
     }
 
     @PatchMapping("{bookingId}")
