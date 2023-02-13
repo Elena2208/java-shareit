@@ -90,8 +90,8 @@ public class BookingServiceImpl implements BookingService {
                 return BookingMapper.toListBookingDto(bookingRepository
                         .findAllByBookerIdAndEndIsBeforeOrderByStartDesc(bookerId, now));
             case FUTURE:
-                return BookingMapper.toListBookingDto(bookingRepository.
-                        findAllByBookerIdAndStartIsAfterOrderByStartDesc(bookerId,now));
+                return BookingMapper.toListBookingDto(bookingRepository
+                        .findAllByBookerIdAndStartIsAfterOrderByStartDesc(bookerId,now));
             case WAITING:
                 return BookingMapper.toListBookingDto(bookingRepository
                         .findAllByBookerIdAndStartIsAfterAndStatusIsOrderByStartDesc(
