@@ -1,8 +1,10 @@
 package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoRequest;
 import ru.practicum.shareit.booking.model.Booking;
@@ -29,10 +31,11 @@ public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
 
     @Override
+    @Transactional
     public BookingDto addBooking(BookingDtoRequest bookingDtoRequest, long userId) {
         User user = getUser(userId);
         Item item = getItem(bookingDtoRequest.getItemId());
-        if (Boolean.FALSE.equals(item.getAvailable())) {
+        if (BooleanUtils.isFalse(item.getAvailable())) {
             throw new ValidationException("The item is already booked.");
         }
         if (item.getOwner().getId() == userId) {
@@ -47,6 +50,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public BookingDto approve(long bookingId, Boolean approved, long userId) {
         Booking booking = getBooking(bookingId);
         if (!booking.getStatus().equals(BookingStatus.WAITING)) {
@@ -61,6 +65,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public BookingDto getBookingById(long bookingId, long userId) {
         Booking booking = getBooking(bookingId);
         if (booking.getBooker().getId() == userId || booking.getItem().getOwner().getId() == userId) {
@@ -71,34 +76,35 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<BookingDto> getBookingByUser(long bookerId, State state) {
         getUser(bookerId);
-        Sort sort = Sort.by(Sort.Direction.DESC, "start");
+        LocalDateTime now = LocalDateTime.now();
         switch (state) {
             case ALL:
-                return BookingMapper.toListBookingDto(bookingRepository
-                        .findBookingByBookerIdOrderByStartDesc(bookerId));
+                return BookingMapper.toListBookingDto(bookingRepository.findAllByBookerIdOrderByStartDesc(bookerId));
             case CURRENT:
                 return BookingMapper.toListBookingDto(bookingRepository
-                        .findBookingsCurrentForBooker(bookerId, LocalDateTime.now(), sort));
+                        .findAllByBookerIdAndEndIsAfterAndStartIsBeforeOrderByStartDesc(bookerId, now, now));
             case PAST:
                 return BookingMapper.toListBookingDto(bookingRepository
-                        .findBookingsPastForBooker(bookerId, LocalDateTime.now(), sort));
+                        .findAllByBookerIdAndEndIsBeforeOrderByStartDesc(bookerId, now));
             case FUTURE:
-                return BookingMapper.toListBookingDto(bookingRepository
-                        .findBookingsFutureForBooker(bookerId, LocalDateTime.now(), sort));
+                return BookingMapper.toListBookingDto(bookingRepository.
+                        findAllByBookerIdAndStartIsAfterOrderByStartDesc(bookerId,now));
             case WAITING:
                 return BookingMapper.toListBookingDto(bookingRepository
-                        .findBookingsByStatusAndBookerId(bookerId, BookingStatus.WAITING));
+                        .findAllByBookerIdAndStartIsAfterAndStatusIsOrderByStartDesc(
+                                bookerId,now,BookingStatus.WAITING));
             case REJECTED:
                 return BookingMapper.toListBookingDto(bookingRepository
-                        .findBookingsByStatusAndBookerId(bookerId, BookingStatus.REJECTED));
-            default:
-                throw new UnknownStateException("Unknown state: " + state);
+                        .findAllByBookerIdAndStatusIsOrderByStartDesc(bookerId, BookingStatus.REJECTED));
+            default: throw new UnknownStateException("Unknown state: " + state);
         }
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<BookingDto> getBookingByOwner(long ownerId, State state) {
         getUser(ownerId);
         List<Booking> bookings;

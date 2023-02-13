@@ -1,5 +1,6 @@
 package ru.practicum.shareit.mapper;
 
+import org.jetbrains.annotations.NotNull;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoRequest;
 import ru.practicum.shareit.booking.model.Booking;
@@ -20,7 +21,7 @@ public class BookingMapper {
         return booking;
     }
 
-    public static BookingDto toBookingDto(Booking booking) {
+    public static @NotNull BookingDto toBookingDto(Booking booking) {
         BookingDto bookingDto = new BookingDto();
         bookingDto.setId(booking.getId());
         bookingDto.setStart(booking.getStart());

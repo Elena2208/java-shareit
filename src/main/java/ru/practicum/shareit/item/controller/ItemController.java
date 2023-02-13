@@ -48,7 +48,7 @@ public class ItemController {
         return itemService.search(text);
     }
 
-    //пошли комменты
+
     @PostMapping("/{itemId}/comment")
     public CommentDto addCommentToItem(@Valid @RequestBody CommentDto commentDto,
                                        @PathVariable long itemId,

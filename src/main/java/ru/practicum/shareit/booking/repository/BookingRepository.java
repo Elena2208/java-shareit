@@ -13,22 +13,22 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
-    List<Booking> findBookingByBookerIdOrderByStartDesc(long bookerId);
+    List<Booking> findAllByBookerIdOrderByStartDesc(Long userId);
 
-    @Query("from Booking b where b.booker.id = :bookerId and b.start <= :date and b.end >= :date")
-    List<Booking> findBookingsCurrentForBooker(@Param("bookerId") long bookerId,
-                                               @Param("date") LocalDateTime date, Sort sort);
+    List<Booking> findAllByBookerIdAndEndIsAfterAndStartIsBeforeOrderByStartDesc(Long userId,
+                                                                                 LocalDateTime endDateTime,
+                                                                                 LocalDateTime startDateTime);
 
-    @Query("from Booking b where b.booker.id = :bookerId and b.end < :date")
-    List<Booking> findBookingsPastForBooker(@Param("bookerId") long bookerId, @Param("date") LocalDateTime date,
-                                            Sort sort);
+    List<Booking> findAllByBookerIdAndEndIsBeforeOrderByStartDesc(Long userId, LocalDateTime endDateTime);
 
-    @Query("from Booking b where b.booker.id = :bookerId and b.start > :date")
-    List<Booking> findBookingsFutureForBooker(@Param("bookerId") long bookerId, @Param("date") LocalDateTime date,
-                                              Sort sort);
+    List<Booking> findAllByBookerIdAndStartIsAfterOrderByStartDesc(Long userId,
+                                                                   LocalDateTime startDateTime);
 
-    @Query("from Booking b where b.booker.id = :bookerId and b.status = :status")
-    List<Booking> findBookingsByStatusAndBookerId(@Param("bookerId") long bookerId, BookingStatus status);
+    List<Booking> findAllByBookerIdAndStartIsAfterAndStatusIsOrderByStartDesc(Long userId,
+                                                                              LocalDateTime startDateTime,
+                                                                              BookingStatus bookingStatus);
+
+    List<Booking> findAllByBookerIdAndStatusIsOrderByStartDesc(Long userId, BookingStatus status);
 
     @Query("from Booking b where b.item.owner.id = :ownerId")
     List<Booking> findAllBookingsForOwner(@Param("ownerId") long ownerId, Sort sort);
@@ -48,7 +48,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("from Booking b where b.item.owner.id = :ownerId and b.status = :status")
     List<Booking> findBookingsByStatusForOwner(@Param("ownerId") long ownerId, @Param("status") BookingStatus status);
 
-
     Booking findBookingByItemAndBookerAndStatusIsAndEndIsBefore(Item item, User userId,
                                                                 BookingStatus status, LocalDateTime now);
 
@@ -61,5 +60,4 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "where b.item_id = :itemId and b.start_date > :date order by b.start_date limit  1",
             nativeQuery = true)
     Booking findBookingByItemWithDateAfter(@Param("itemId") long itemId, @Param("date") LocalDateTime date);
-
 }
