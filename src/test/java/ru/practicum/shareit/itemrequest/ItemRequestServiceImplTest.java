@@ -39,8 +39,8 @@ class ItemRequestServiceImplTest {
 
     @BeforeEach
     void prepare() {
-        requesterDto = new UserDto(0,"requester", "requestor@gmail.com");
-        itemRequestDto = new ItemRequestDto(0,"request description",
+        requesterDto = new UserDto(0, "requester", "requestor@gmail.com");
+        itemRequestDto = new ItemRequestDto(0, "request description",
                 LocalDateTime.now(), new ArrayList<ItemDto>());
     }
 
@@ -78,7 +78,7 @@ class ItemRequestServiceImplTest {
 
     @Test
     void getOneRequest() {
-        requesterDto= userService.addUser(requesterDto);
+        requesterDto = userService.addUser(requesterDto);
         itemRequestDto = itemRequestService.addRequest(itemRequestDto, requesterDto.getId());
         assertThat(itemRequestDto.getId()).isNotZero();
         assertThat(itemRequestDto.getDescription()).isEqualTo("request description");

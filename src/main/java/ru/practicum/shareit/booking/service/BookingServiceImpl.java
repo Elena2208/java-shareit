@@ -110,7 +110,7 @@ public class BookingServiceImpl implements BookingService {
                 break;
             case REJECTED:
                 bookings = bookingRepository
-                        .findAllByBookerIdAndStatusIsOrderByStartDesc(bookerId, BookingStatus.REJECTED,pageable);
+                        .findAllByBookerIdAndStatusIsOrderByStartDesc(bookerId, BookingStatus.REJECTED, pageable);
                 break;
             default:
                 throw new UnknownStateException("Unknown state: " + state);
@@ -123,26 +123,26 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingDto> getBookingByOwner(long ownerId, State state, int from, int size) {
         getUser(ownerId);
         Sort sort = Sort.by(Sort.Direction.DESC, "start");
-        Pageable pageable=PageRequest.of(from / size, size, sort);
+        Pageable pageable = PageRequest.of(from / size, size, sort);
         List<Booking> bookings;
         switch (state) {
             case ALL:
-                bookings = bookingRepository.findAllBookingsForOwner(ownerId,pageable);
+                bookings = bookingRepository.findAllBookingsForOwner(ownerId, pageable);
                 break;
             case CURRENT:
-                bookings = bookingRepository.findBookingsCurrentForOwner(ownerId, LocalDateTime.now(),pageable);
+                bookings = bookingRepository.findBookingsCurrentForOwner(ownerId, LocalDateTime.now(), pageable);
                 break;
             case PAST:
-                bookings = bookingRepository.findBookingsPastForOwner(ownerId, LocalDateTime.now(),pageable);
+                bookings = bookingRepository.findBookingsPastForOwner(ownerId, LocalDateTime.now(), pageable);
                 break;
             case FUTURE:
-                bookings = bookingRepository.findBookingsFutureForOwner(ownerId, LocalDateTime.now(),pageable);
+                bookings = bookingRepository.findBookingsFutureForOwner(ownerId, LocalDateTime.now(), pageable);
                 break;
             case WAITING:
-                bookings = bookingRepository.findBookingsByStatusForOwner(ownerId, BookingStatus.WAITING,pageable);
+                bookings = bookingRepository.findBookingsByStatusForOwner(ownerId, BookingStatus.WAITING, pageable);
                 break;
             case REJECTED:
-                bookings = bookingRepository.findBookingsByStatusForOwner(ownerId, BookingStatus.REJECTED,pageable);
+                bookings = bookingRepository.findBookingsByStatusForOwner(ownerId, BookingStatus.REJECTED, pageable);
                 break;
             default:
                 throw new UnknownStateException("Unknown state: UNSUPPORTED_STATUS");
