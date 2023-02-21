@@ -58,7 +58,6 @@ class BookingRepositoryTest {
         booking.setStart(LocalDateTime.parse("1900-09-01T01:00"));
         booking.setEnd(LocalDateTime.parse("3000-09-01T01:00"));
         booking = bookingRepository.save(booking);
-
         List<Booking> bookings = bookingRepository.findAllByBookerIdAndEndIsAfterAndStartIsBeforeOrderByStartDesc(
         booker.getId(), LocalDateTime.now(), LocalDateTime.now(), PageRequest.of(0, 2));
         assertThat(bookings).hasSize(1).contains(booking);
@@ -69,7 +68,6 @@ class BookingRepositoryTest {
         booking.setStart(LocalDateTime.parse("1900-09-01T01:00"));
         booking.setEnd(LocalDateTime.parse("2000-09-01T01:00"));
         booking = bookingRepository.save(booking);
-
         List<Booking> bookings = bookingRepository.findAllByBookerIdAndEndIsBeforeOrderByStartDesc(
                 booker.getId(), LocalDateTime.now(), PageRequest.of(0, 2));
         assertThat(bookings).hasSize(1).contains(booking);
@@ -80,7 +78,6 @@ class BookingRepositoryTest {
         booking.setStart(LocalDateTime.parse("2500-09-01T01:00"));
         booking.setEnd(LocalDateTime.parse("2600-09-01T01:00"));
         booking = bookingRepository.save(booking);
-
         List<Booking> bookings = bookingRepository.findAllByBookerIdAndStartIsAfterOrderByStartDesc(
                 booker.getId(), LocalDateTime.now(), PageRequest.of(0, 2));
         assertThat(bookings).hasSize(1).contains(booking);
@@ -89,7 +86,6 @@ class BookingRepositoryTest {
     @Test
     void findBookingsByStatusAndBookerId() {
         booking = bookingRepository.save(booking);
-
         List<Booking> bookings = bookingRepository.findAllByBookerIdAndStartIsAfterAndStatusIsOrderByStartDesc(
                 booker.getId(), LocalDateTime.now(), BookingStatus.WAITING, PageRequest.of(0, 2));
         assertThat(bookings).hasSize(1).contains(booking);
@@ -98,7 +94,6 @@ class BookingRepositoryTest {
     @Test
     void findAllBookingsForItemOwner() {
         booking = bookingRepository.save(booking);
-
         List<Booking> bookings = bookingRepository.findAllBookingsForOwner(owner.getId(),
                 PageRequest.of(0, 2));
         assertThat(bookings).hasSize(1).contains(booking);
@@ -109,7 +104,6 @@ class BookingRepositoryTest {
         booking.setStart(LocalDateTime.parse("1900-09-01T01:00"));
         booking.setEnd(LocalDateTime.parse("2600-09-01T01:00"));
         booking = bookingRepository.save(booking);
-
         List<Booking> bookings = bookingRepository.findBookingsCurrentForOwner(owner.getId(), LocalDateTime.now(),
                 PageRequest.of(0, 2));
         assertThat(bookings).hasSize(1).contains(booking);
@@ -120,7 +114,6 @@ class BookingRepositoryTest {
         booking.setStart(LocalDateTime.parse("1900-09-01T01:00"));
         booking.setEnd(LocalDateTime.parse("2000-09-01T01:00"));
         booking = bookingRepository.save(booking);
-
         List<Booking> bookings = bookingRepository.findBookingsPastForOwner(owner.getId(), LocalDateTime.now(),
                 PageRequest.of(0, 2));
         assertThat(bookings).hasSize(1).contains(booking);
@@ -131,7 +124,6 @@ class BookingRepositoryTest {
         booking.setStart(LocalDateTime.parse("3000-09-01T01:00"));
         booking.setEnd(LocalDateTime.parse("3500-09-01T01:00"));
         booking = bookingRepository.save(booking);
-
         List<Booking> bookings = bookingRepository.findBookingsFutureForOwner(owner.getId(), LocalDateTime.now(),
                 PageRequest.of(0, 2));
         assertThat(bookings).hasSize(1).contains(booking);
@@ -140,7 +132,6 @@ class BookingRepositoryTest {
     @Test
     void findBookingsByStatusForItemOwner() {
         booking = bookingRepository.save(booking);
-
         List<Booking> bookings = bookingRepository.findBookingsByStatusForOwner(owner.getId(), BookingStatus.WAITING,
                 PageRequest.of(0, 2));
         assertThat(bookings).hasSize(1).contains(booking);
@@ -152,7 +143,6 @@ class BookingRepositoryTest {
         booking.setStart(LocalDateTime.parse("1000-09-01T01:00"));
         booking.setEnd(LocalDateTime.parse("3500-09-01T01:00"));
         booking = bookingRepository.save(booking);
-
         assertEquals(booking, bookingRepository.findBookingByItemWithDateBefore(item.getId(), LocalDateTime.now()));
     }
 
@@ -161,7 +151,6 @@ class BookingRepositoryTest {
         booking.setStart(LocalDateTime.parse("2500-09-01T01:00"));
         booking.setEnd(LocalDateTime.parse("3500-09-01T01:00"));
         booking = bookingRepository.save(booking);
-
         assertEquals(booking, bookingRepository.findBookingByItemWithDateAfter(item.getId(), LocalDateTime.now()));
     }
 }
