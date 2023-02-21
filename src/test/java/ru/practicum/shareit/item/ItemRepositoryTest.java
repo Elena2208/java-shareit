@@ -25,8 +25,8 @@ class ItemRepositoryTest {
 
     @BeforeEach
     void  beforeEach() {
-        user = new User(1, "One", "one@gmail.com");
-        item = new Item(1, "item", "item 1", true, user, null);
+        user = new User(0, "One", "one@gmail.com");
+        item = new Item(0, "item", "item 1", true, user, null);
     }
 
     @Test
