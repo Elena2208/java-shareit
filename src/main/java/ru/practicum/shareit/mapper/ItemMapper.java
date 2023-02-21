@@ -4,19 +4,21 @@ import org.springframework.lang.Nullable;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoDate;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ItemMapper {
-    public static Item toItem(ItemDto itemDto, @Nullable User user) {
+    public static Item toItem(ItemDto itemDto, @Nullable User user,@Nullable ItemRequest request) {
         Item item = new Item();
         item.setId(itemDto.getId());
         item.setName(itemDto.getName());
         item.setDescription(itemDto.getDescription());
         item.setAvailable(itemDto.getAvailable());
         item.setOwner(user);
+        item.setItemRequest(request);
         return item;
     }
 
@@ -27,13 +29,14 @@ public class ItemMapper {
         itemDto.setName(item.getName());
         itemDto.setDescription(item.getDescription());
         itemDto.setAvailable(item.getAvailable());
+        itemDto.setRequestId(item.getItemRequest() != null ? item.getItemRequest().getId() : null);
         return itemDto;
     }
 
     public static List<ItemDto> toListItemDto(List<Item> items) {
         return items
                 .stream()
-                .map(i -> ItemMapper.toItemDto(i))
+                .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());
     }
 
@@ -49,6 +52,7 @@ public class ItemMapper {
         itemDtoDate.setName(item.getName());
         itemDtoDate.setDescription(item.getDescription());
         itemDtoDate.setAvailable(item.getAvailable());
+        itemDtoDate.setRequestId(item.getItemRequest() != null ? item.getItemRequest().getId() : null);
         return itemDtoDate;
     }
 }

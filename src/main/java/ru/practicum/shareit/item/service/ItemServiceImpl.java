@@ -2,6 +2,8 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.model.Booking;
@@ -20,13 +22,16 @@ import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.mapper.BookingMapper;
 import ru.practicum.shareit.mapper.CommentMapper;
 import ru.practicum.shareit.mapper.ItemMapper;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.repository.ItemRequestRepository;
+import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.repository.UserRepository;
+
 
 import java.time.LocalDateTime;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -35,12 +40,14 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final ItemRequestRepository itemRequestRepository;
 
     @Override
     @Transactional
     public ItemDto addItem(ItemDto itemDto, long userId) {
         User owner = fromOptionalUser(userId);
-        Item item = ItemMapper.toItem(itemDto, owner);
+         ItemRequest itemRequest=itemDto.getRequestId() != null ? fromOptionalToRequest(itemDto.getRequestId()) : null;
+        Item item = ItemMapper.toItem(itemDto, owner,itemRequest);
         return ItemMapper.toItemDto(itemRepository.save(item));
     }
 
@@ -50,7 +57,7 @@ public class ItemServiceImpl implements ItemService {
         if (isOwner(itemId, userId)) {
             User user = fromOptionalUser(userId);
             Item oldItem = fromOptionalItem(itemId);
-            Item update = ItemMapper.toItem(itemDto, user);
+            Item update = ItemMapper.toItem(itemDto, user, null);
             Optional.ofNullable(update.getName()).ifPresent(oldItem::setName);
             Optional.ofNullable(update.getDescription()).ifPresent(oldItem::setDescription);
             Optional.ofNullable(update.getAvailable()).ifPresent(oldItem::setAvailable);
@@ -61,22 +68,24 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDtoDate> getAllItemByUser(long userId) {
+    public List<ItemDtoDate> getAllItemByUser(long userId, int from, int size) {
         User owner = fromOptionalUser(userId);
-        List<ItemDtoDate> items = ItemMapper.toListItemDtoDate(itemRepository.findByOwner(owner));
+        List<ItemDtoDate> items = ItemMapper.toListItemDtoDate(itemRepository
+                .findByOwner(PageRequest.of(from / size, size, Sort.by("id")), owner));
         for (ItemDtoDate item : items) {
             addBookingForItem(item);
         }
-        items.sort(Comparator.comparingLong(ItemDtoDate::getId));
         return items;
     }
 
     @Override
-    public List<ItemDto> search(String text) {
+    public List<ItemDto> search(String text, int from, int size) {
         if (StringUtils.isBlank(text)) {
             return List.of();
         }
-        return ItemMapper.toListItemDto(itemRepository.findByNameOrDescription(text));
+        List<Item> items = itemRepository.findByNameOrDescription(PageRequest.of(from / size, size), text);
+        return items.stream().map(ItemMapper::toItemDto)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -141,4 +150,10 @@ public class ItemServiceImpl implements ItemService {
     private boolean isOwner(long itemId, long userId) {
         return fromOptionalItem(itemId).getOwner().getId() == userId;
     }
+
+    private ItemRequest fromOptionalToRequest(long requestId) {
+        return itemRequestRepository.findById(requestId).orElseThrow(() ->
+                new NotFoundException("Request not found."));
+    }
+
 }

@@ -22,4 +22,6 @@ public class User {
     private String name;
     @Column(name = "user_email", nullable = false, unique = true)
     private String email;
+
+
 }
