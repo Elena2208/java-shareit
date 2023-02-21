@@ -8,14 +8,21 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoRequest;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.BookingStatus;
+import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.exception.NoAccessException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoDate;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.repository.CommentRepository;
+import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.mapper.ItemMapper;
 import ru.practicum.shareit.mapper.UserMapper;
+import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
@@ -29,6 +36,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
+
 @Transactional
 @SpringBootTest(
         properties = "db.name=test",
@@ -40,16 +48,21 @@ class ItemServiceImplTest {
     private ItemService itemService;
     @Autowired
     private UserService userService;
-
     @Autowired
     private BookingService bookingService;
+
     private ItemDto itemDto;
+
     private UserDto userDto;
+    private UserDto userBookerDto;
+
 
     @BeforeEach
     void before() {
-        userDto = new UserDto(1L, "user", "user@gmail.com");
+        userDto = new UserDto(0, "user", "user@gmail.com");
         userDto = userService.addUser(userDto);
+        userBookerDto = new UserDto(0, "booker", "booker@yandex.ru");
+        userBookerDto = userService.addUser(userBookerDto);
         itemDto = new ItemDto(1L, "item1", "item description", true, null);
         itemDto = itemService.addItem(itemDto, userDto.getId());
     }
@@ -135,7 +148,7 @@ class ItemServiceImplTest {
 
     @Test
     void getItemEachUserById_Owner_WithLastBooking() {
-        UserDto booker = new UserDto(0,"booker", "booker@gmail.com");
+        UserDto booker = new UserDto(0, "booker", "booker@gmail.com");
         booker = userService.addUser(booker);
 
         LocalDateTime start = LocalDateTime.parse("1100-09-01T01:00");
@@ -159,7 +172,7 @@ class ItemServiceImplTest {
 
     @Test
     void getItemEachUserById_NotOwner() {
-        UserDto userNotOwner = new UserDto(0,"notOwner", "notOwner@gmail.com");
+        UserDto userNotOwner = new UserDto(0, "notOwner", "notOwner@gmail.com");
         userNotOwner = userService.addUser(userNotOwner);
         User owner = UserMapper.toUser(userDto);
         Item item = ItemMapper.toItem(itemDto, owner, null);
@@ -188,4 +201,5 @@ class ItemServiceImplTest {
         assertEquals(List.of(itemDto),
                 itemService.search("ite", 0, 2));
     }
+
 }
