@@ -59,8 +59,8 @@ class BookingRepositoryTest {
         booking.setEnd(LocalDateTime.parse("3000-09-01T01:00"));
         booking = bookingRepository.save(booking);
 
-        List<Booking> bookings = bookingRepository.findAllByBookerIdAndEndIsAfterAndStartIsBeforeOrderByStartDesc
-                (booker.getId(), LocalDateTime.now(), LocalDateTime.now(), PageRequest.of(0, 2));
+        List<Booking> bookings = bookingRepository.findAllByBookerIdAndEndIsAfterAndStartIsBeforeOrderByStartDesc(
+        booker.getId(), LocalDateTime.now(), LocalDateTime.now(), PageRequest.of(0, 2));
         assertThat(bookings).hasSize(1).contains(booking);
     }
 

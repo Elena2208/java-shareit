@@ -46,8 +46,8 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     public ItemDto addItem(ItemDto itemDto, long userId) {
         User owner = fromOptionalUser(userId);
-         ItemRequest itemRequest=itemDto.getRequestId() != null ? fromOptionalToRequest(itemDto.getRequestId()) : null;
-        Item item = ItemMapper.toItem(itemDto, owner,itemRequest);
+        ItemRequest itemRequest = itemDto.getRequestId() != null ? fromOptionalToRequest(itemDto.getRequestId()) : null;
+        Item item = ItemMapper.toItem(itemDto, owner, itemRequest);
         return ItemMapper.toItemDto(itemRepository.save(item));
     }
 

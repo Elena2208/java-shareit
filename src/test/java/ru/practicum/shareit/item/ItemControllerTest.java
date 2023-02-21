@@ -46,9 +46,10 @@ public class ItemControllerTest {
                 1L, null, null, null);
         commentDto = new CommentDto(1L, "comment", "Elena", LocalDateTime.now());
     }
+
     @Test
-    void addItem() throws Exception{
-        when(itemService.addItem(any(),anyLong())).thenReturn(itemDto);
+    void addItem() throws Exception {
+        when(itemService.addItem(any(), anyLong())).thenReturn(itemDto);
         mockMvc.perform(
                         post("/items")
                                 .content(mapper.writeValueAsString(itemDto))

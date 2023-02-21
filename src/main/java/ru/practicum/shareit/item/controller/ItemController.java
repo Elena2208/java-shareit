@@ -44,9 +44,9 @@ public class ItemController {
 
     @GetMapping
     public List<ItemDtoDate> getItemOwnerUser(@RequestHeader(HEADER_USER_ID) long userId,
-                                            @PositiveOrZero @RequestParam(value = "from", required = false,
-                                                      defaultValue = "0")  int from,
-                                             @Positive @RequestParam(
+                                              @PositiveOrZero @RequestParam(value = "from", required = false,
+                                                      defaultValue = "0") int from,
+                                              @Positive @RequestParam(
                                                       value = "size", required = false,
                                                       defaultValue = "20") int size) {
         return itemService.getAllItemByUser(userId, from, size);
@@ -54,12 +54,13 @@ public class ItemController {
 
     @GetMapping("/search")
     public List<ItemDto> getItemAvailableToRenter(@RequestParam String text,
-                                                 @PositiveOrZero @RequestParam(value = "from", required = false,
+                                                  @PositiveOrZero @RequestParam(value = "from", required = false,
                                                           defaultValue = "0") int from,
-                                                 @Positive @RequestParam(value = "size", required = false,
+                                                  @Positive @RequestParam(value = "size", required = false,
                                                           defaultValue = "20") int size) {
         return itemService.search(text, from, size);
     }
+
     @PostMapping("/{itemId}/comment")
     public CommentDto addCommentToItem(@Valid @RequestBody CommentDto commentDto,
                                        @PathVariable long itemId,

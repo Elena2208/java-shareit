@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name="requests")
+@Table(name = "requests")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -26,7 +26,7 @@ public class ItemRequest {
     @Column(name = "request_id")
     private long id;
     @NotBlank
-    @Column(name=" request_description")
+    @Column(name = " request_description")
     private String description;
     @ManyToOne
     @JoinColumn(name = "requester_id", referencedColumnName = "user_id")

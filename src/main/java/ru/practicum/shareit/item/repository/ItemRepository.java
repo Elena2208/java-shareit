@@ -10,7 +10,7 @@ import ru.practicum.shareit.user.model.User;
 
 import java.util.List;
 
-public interface ItemRepository extends JpaRepository<Item,Long> {
+public interface ItemRepository extends JpaRepository<Item, Long> {
     List<Item> findByOwner(Pageable pageable, User owner);
 
     @Query("select i from Item i " +
@@ -18,7 +18,8 @@ public interface ItemRepository extends JpaRepository<Item,Long> {
             "or lower(i.description) like concat('%', lower(:text), '%')) " +
             "and i.available = true")
     List<Item> findByNameOrDescription(Pageable pageable, @Param("text") String text);
-    List <Item> findAllByItemRequest(ItemRequest itemRequest);
+
+    List<Item> findAllByItemRequest(ItemRequest itemRequest);
 }
 
 
