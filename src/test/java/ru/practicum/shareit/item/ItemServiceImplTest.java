@@ -10,6 +10,8 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoRequest;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.exception.NoAccessException;
+import ru.practicum.shareit.exception.ValidationException;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoDate;
 import ru.practicum.shareit.item.model.Item;
@@ -29,7 +31,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-
 @Transactional
 @SpringBootTest(
         properties = "db.name=test",
@@ -41,27 +42,22 @@ class ItemServiceImplTest {
     private ItemService itemService;
     @Autowired
     private UserService userService;
+
     @Autowired
     private BookingService bookingService;
-
     private ItemDto itemDto;
-
     private UserDto userDto;
-    private UserDto userBookerDto;
-
 
     @BeforeEach
-    void before() {
+    void prepare() {
         userDto = new UserDto(0, "user", "user@gmail.com");
         userDto = userService.addUser(userDto);
-        userBookerDto = new UserDto(0, "booker", "booker@yandex.ru");
-        userBookerDto = userService.addUser(userBookerDto);
-        itemDto = new ItemDto(1L, "item1", "item description", true, null);
+        itemDto = new ItemDto(0, "item1", "item description", true, null);
         itemDto = itemService.addItem(itemDto, userDto.getId());
     }
 
     @Test
-    void addItemTest() {
+    void addItem() {
         assertThat(itemDto.getName()).isEqualTo("item1");
         assertThat(itemDto.getDescription()).isEqualTo("item description");
         assertThat(itemDto.getAvailable()).isTrue();
@@ -69,15 +65,16 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void updateItem_WithNameTest() {
+    void updateItem_WithName() {
         ItemDto updatedItem = new ItemDto();
         updatedItem.setName("updated name");
         itemDto.setName("updated name");
+
         assertEquals(itemDto, itemService.updateItem(updatedItem, itemDto.getId(), userDto.getId()));
     }
 
     @Test
-    void updateItem_WithDescriptionTest() {
+    void updateItem_WithDescription() {
         ItemDto updatedItem = new ItemDto();
         updatedItem.setDescription("updated description");
         itemDto.setDescription("updated description");
@@ -86,7 +83,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void updateItem_WithAvailableTest() {
+    void updateItem_WithAvailable() {
         ItemDto updatedItem = new ItemDto();
         updatedItem.setAvailable(false);
         itemDto.setAvailable(false);
@@ -95,7 +92,7 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void updateItem_UserNotOwnerTest() {
+    void updateItem_UserNotOwner() {
         ItemDto updatedItem = new ItemDto();
         updatedItem.setName("updated name");
         itemDto.setName("updated name");
@@ -110,25 +107,29 @@ class ItemServiceImplTest {
     }
 
     @Test
-    void getAllItemByUserTest() {
+    void getItemEachUserById_Owner() {
         User user = UserMapper.toUser(userDto);
         Item item = ItemMapper.toItem(itemDto, user, null);
-        ItemDtoDate itemDtoDate = ItemMapper.toItemDtoDate(item);
-        itemDtoDate.setComments(new ArrayList<>());
+        ItemDtoDate itemDtoWithDate = ItemMapper.toItemDtoDate(item);
+        itemDtoWithDate.setComments(new ArrayList<>());
 
-        assertEquals(itemDtoDate, itemService.getItemUser(item.getId(), user.getId()));
+        assertEquals(itemDtoWithDate, itemService.getItemUser(itemDto.getId(), userDto.getId()));
     }
 
     @Test
     void getItemEachUserById_Owner_WithNextBooking() {
         UserDto booker = new UserDto(0, "booker", "booker@gmail.com");
         booker = userService.addUser(booker);
+
         LocalDateTime start = LocalDateTime.parse("2100-09-01T01:00");
         LocalDateTime end = LocalDateTime.parse("2200-09-01T01:00");
+
         BookingDtoRequest bookingDtoRequest = new BookingDtoRequest(start, end, itemDto.getId());
         BookingDto bookingDto = bookingService.addBooking(bookingDtoRequest, booker.getId());
+
         User owner = UserMapper.toUser(userDto);
         Item item = ItemMapper.toItem(itemDto, owner, null);
+
         ItemDtoDate itemDtoDate = ItemMapper.toItemDtoDate(item);
         itemDtoDate.setComments(new ArrayList<>());
         itemDtoDate.setNextBooking(new ItemDtoDate.ForItemBookingDto(bookingDto.getId(),
@@ -167,10 +168,12 @@ class ItemServiceImplTest {
     void getItemEachUserById_NotOwner() {
         UserDto userNotOwner = new UserDto(0, "notOwner", "notOwner@gmail.com");
         userNotOwner = userService.addUser(userNotOwner);
+
         User owner = UserMapper.toUser(userDto);
         Item item = ItemMapper.toItem(itemDto, owner, null);
         ItemDtoDate itemDtoDate = ItemMapper.toItemDtoDate(item);
         itemDtoDate.setComments(Collections.EMPTY_LIST);
+
         assertEquals(itemDtoDate, itemService.getItemUser(itemDto.getId(), userNotOwner.getId()));
     }
 
@@ -185,8 +188,7 @@ class ItemServiceImplTest {
 
     @Test
     void getItemsAvailableToRent_BlankList() {
-        assertEquals(Collections.EMPTY_LIST,
-                itemService.search("", 0, 2));
+        assertEquals(Collections.EMPTY_LIST, itemService.search("", 0, 2));
     }
 
     @Test
@@ -195,4 +197,12 @@ class ItemServiceImplTest {
                 itemService.search("ite", 0, 2));
     }
 
+
+    @Test
+    void addCommentToItem_UserDidntBook() {
+        CommentDto commentDto = new CommentDto(0, "comment", "author", null);
+        ValidationException ex = assertThrows(ValidationException.class,
+                () -> itemService.addComment(itemDto.getId(), userDto.getId(), commentDto));
+        assertThat(ex.getMessage()).contains("The item has not been booked yet.");
+    }
 }
