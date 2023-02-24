@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -72,7 +73,7 @@ class UserServiceImplTest {
     @Test
     void updateUserNotFound() {
         userService.updateUser(userDto.getId(), userDto);
-        Exception ex = Assertions.assertThrows(NotFoundException.class,
+        Exception ex = assertThrows(NotFoundException.class,
                 () -> userService.updateUser(100L, userDto));
         assertEquals("User not found", ex.getMessage());
     }
@@ -88,7 +89,7 @@ class UserServiceImplTest {
     void getUserNotFound() {
         when(repository.findById(anyLong()))
                 .thenReturn(Optional.empty());
-        Exception e = Assertions.assertThrows(NotFoundException.class, () -> userService.getUserById(10L));
+        Exception e = assertThrows(NotFoundException.class, () -> userService.getUserById(10L));
         assertEquals("User not found", e.getMessage());
     }
 
@@ -96,5 +97,13 @@ class UserServiceImplTest {
     void getAllUsers() {
         List<UserDto> userList = List.of(userDto);
         assertEquals(userList, userService.getAllUsers());
+    }
+
+    @Test
+    void deleteUser() {
+        userService.deleteUserById(userDto.getId());
+        NotFoundException ex = assertThrows(NotFoundException.class,
+                () -> userService.getUserById(userDto.getId()));
+        assertEquals("User not found", ex.getMessage());
     }
 }

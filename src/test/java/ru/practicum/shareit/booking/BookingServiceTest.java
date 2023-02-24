@@ -115,6 +115,15 @@ class BookingServiceTest {
     }
 
     @Test
+    void approveBookingUserNotFound() {
+        bookingDto.setStatus(BookingStatus.APPROVED);
+
+        NotFoundException ex = assertThrows(NotFoundException.class,
+                () ->  bookingService.approve(bookingDto.getId(),true,-120L));
+        assertThat(ex.getMessage()).contains("Used does not have the right.");
+    }
+
+    @Test
     void getBookingByIdIfOwnerOrBooker() {
         assertEquals(bookingDto, bookingService.getBookingById(bookingDto.getId(), owner.getId()));
     }
