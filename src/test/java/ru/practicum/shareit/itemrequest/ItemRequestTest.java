@@ -22,9 +22,9 @@ class ItemRequestTest {
 
     @Test
     void convert() throws IOException {
-        User user= new User(1,"name","elena@yandex.ru");
-        ItemRequest itemRequest = new ItemRequest(1,"text",user,
-                LocalDateTime.now(),Collections.emptyList());
+        User user = new User(1, "name", "elena@yandex.ru");
+        ItemRequest itemRequest = new ItemRequest(1, "text", user,
+                LocalDateTime.now(), Collections.emptyList());
 
         var result = json.write(itemRequest);
         assertThat(result).hasJsonPath("$.id");
