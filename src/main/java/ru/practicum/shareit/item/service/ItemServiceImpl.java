@@ -7,7 +7,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exception.NoAccessException;
 import ru.practicum.shareit.exception.NotFoundException;
@@ -129,14 +128,15 @@ public class ItemServiceImpl implements ItemService {
     public CommentDto addComment(long itemId, long userId, CommentDto commentDto) {
         Item item = fromOptionalItem(itemId);
         User author = fromOptionalUser(userId);
-        LocalDateTime now = LocalDateTime.now();
-        Booking booking = bookingRepository.findBookingByItemAndBookerAndStatusIsAndEndIsBefore(item, author, BookingStatus.APPROVED, now);
-        if (booking == null) {
-            throw new ValidationException("The item has not been booked yet.");
+
+        if (bookingRepository.isExists(itemId, userId, LocalDateTime.now())) {
+
+            Comment comment = CommentMapper.toComment(commentDto, item, author);
+            commentDto = CommentMapper.toCommentDto(commentRepository.save(comment));
+        } else {
+            throw new ValidationException("User did not book item.");
         }
-        Comment comment = CommentMapper.toComment(commentDto, item, author);
-        commentRepository.save(comment);
-        return CommentMapper.toCommentDto(comment);
+        return commentDto;
     }
 
     private User fromOptionalUser(long userId) {

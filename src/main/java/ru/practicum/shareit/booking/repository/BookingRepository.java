@@ -51,9 +51,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findBookingsByStatusForOwner(@Param("ownerId") long ownerId, @Param("status") BookingStatus status,
                                                Pageable pageable);
 
-    Booking findBookingByItemAndBookerAndStatusIsAndEndIsBefore(Item item, User userId,
-                                                                BookingStatus status, LocalDateTime now);
-
     @Query(value = "select * from bookings b " +
             "where b.item_id = :itemId and b.start_date < :date order by b.start_date limit  1",
             nativeQuery = true)
@@ -63,4 +60,11 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "where b.item_id = :itemId and b.start_date > :date order by b.start_date limit  1",
             nativeQuery = true)
     Booking findBookingByItemWithDateAfter(@Param("itemId") long itemId, @Param("date") LocalDateTime date);
+    @Query(value = "select exists(select * from bookings b " +
+            "where b.booker_id = :userId and b.item_id = :itemId and  b.end_date < :date)",
+            nativeQuery = true)
+    boolean isExists(@Param("itemId") long itemId,
+                     @Param("userId") long userId,
+                     @Param("date") LocalDateTime date);
 }
+

@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoRequest;
+import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.exception.NoAccessException;
 import ru.practicum.shareit.exception.ValidationException;
@@ -47,6 +48,8 @@ class ItemServiceImplTest {
     private BookingService bookingService;
     private ItemDto itemDto;
     private UserDto userDto;
+    @Autowired
+    private BookingRepository bookingRepository;
 
     @BeforeEach
     void prepare() {
@@ -54,6 +57,7 @@ class ItemServiceImplTest {
         userDto = userService.addUser(userDto);
         itemDto = new ItemDto(0, "item1", "item description", true, null);
         itemDto = itemService.addItem(itemDto, userDto.getId());
+
     }
 
     @Test
@@ -197,12 +201,26 @@ class ItemServiceImplTest {
                 itemService.search("ite", 0, 2));
     }
 
+    @Test
+    void addCommentToItem() {
+        UserDto author = new UserDto(0,"author", "author@gmail.com");
+        author = userService.addUser(author);
+        CommentDto commentDto = new CommentDto(0,"comment", author.getName(), null);
+        LocalDateTime start = LocalDateTime.parse("1100-09-01T01:00");
+        LocalDateTime end = LocalDateTime.parse("1200-09-01T01:00");
+        BookingDtoRequest bookingDtoRequest = new BookingDtoRequest(start, end, itemDto.getId());
+        bookingService.addBooking(bookingDtoRequest, author.getId());
+        CommentDto result = itemService.addComment(itemDto.getId(), author.getId(), commentDto);
+        assertThat(result.getText()).isEqualTo("comment");
+        assertThat(result.getAuthorName()).isEqualTo(author.getName());
+    }
+
 
     @Test
     void addCommentToItem_UserDidntBook() {
         CommentDto commentDto = new CommentDto(0, "comment", "author", null);
         ValidationException ex = assertThrows(ValidationException.class,
                 () -> itemService.addComment(itemDto.getId(), userDto.getId(), commentDto));
-        assertThat(ex.getMessage()).contains("The item has not been booked yet.");
+        assertThat(ex.getMessage()).contains("User did not book item.");
     }
 }
