@@ -31,19 +31,6 @@ public class ErrorHandler {
         return new ErrorResponse(e.getMessage());
     }
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handlerNotFoundException(final AlreadyExistsException e) {
-        log.info("Возникла ошибка с кодом 500", e.getMessage(), e);
-        return new ErrorResponse(e.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handlerUnknownUserException(final UnknownUserException e) {
-        log.info("Возникла ошибка с кодом 500", e.getMessage(), e);
-        return new ErrorResponse(e.getMessage());
-    }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
