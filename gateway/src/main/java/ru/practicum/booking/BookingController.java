@@ -17,30 +17,29 @@ import javax.validation.constraints.PositiveOrZero;
 public class BookingController {
     private final BookingClient bookingClient;
 
-
     private static final String HEADER_USER_ID = "X-Sharer-User-Id";
 
     @PostMapping
-    public  ResponseEntity<Object> create(@Valid @RequestBody BookingDtoRequest bookingDtoRequest,
-                             @RequestHeader(HEADER_USER_ID) long userId) {
+    public ResponseEntity<Object> create(@Valid @RequestBody BookingDtoRequest bookingDtoRequest,
+                                         @RequestHeader(HEADER_USER_ID) long userId) {
         return bookingClient.addBooking(bookingDtoRequest, userId);
     }
 
     @PatchMapping("{bookingId}")
-    public  ResponseEntity<Object> approve(@PathVariable long bookingId,
-                              @RequestParam Boolean approved,
-                              @RequestHeader(HEADER_USER_ID) long userId) {
+    public ResponseEntity<Object> approve(@PathVariable long bookingId,
+                                          @RequestParam Boolean approved,
+                                          @RequestHeader(HEADER_USER_ID) long userId) {
         return bookingClient.approve(bookingId, approved, userId);
     }
 
     @GetMapping("{bookingId}")
-    public  ResponseEntity<Object>getBooking(@PathVariable long bookingId,
-                                 @RequestHeader(HEADER_USER_ID) long userId) {
+    public ResponseEntity<Object> getBooking(@PathVariable long bookingId,
+                                             @RequestHeader(HEADER_USER_ID) long userId) {
         return bookingClient.getBookingById(bookingId, userId);
     }
 
     @GetMapping
-    public  ResponseEntity<Object> getBookingByUser(
+    public ResponseEntity<Object> getBookingByUser(
             @RequestParam(name = "state", required = false, defaultValue = "ALL") State state,
             @RequestHeader(HEADER_USER_ID) long bookerId,
             @PositiveOrZero @RequestParam(value = "from", required = false, defaultValue = "0") int from,
