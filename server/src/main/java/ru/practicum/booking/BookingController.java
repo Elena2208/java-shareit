@@ -17,7 +17,7 @@ public class BookingController {
     private static final String HEADER_USER_ID = "X-Sharer-User-Id";
 
     @PostMapping
-    public BookingDto create( @RequestBody BookingDtoRequest bookingDtoRequest,
+    public BookingDto create(@RequestBody BookingDtoRequest bookingDtoRequest,
                              @RequestHeader(HEADER_USER_ID) long userId) {
         return bookingService.addBooking(bookingDtoRequest, userId);
     }
@@ -40,7 +40,7 @@ public class BookingController {
             @RequestParam(name = "state", required = false, defaultValue = "ALL") State state,
             @RequestHeader(HEADER_USER_ID) long bookerId,
             @RequestParam(value = "from", required = false, defaultValue = "0") int from,
-             @RequestParam(value = "size", required = false, defaultValue = "20") int size) {
+            @RequestParam(value = "size", required = false, defaultValue = "20") int size) {
         return bookingService.getBookingByUser(bookerId, state, from, size);
     }
 
