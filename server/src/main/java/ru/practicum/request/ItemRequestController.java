@@ -4,9 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
+
 import java.util.List;
 
 
@@ -20,7 +18,7 @@ public class ItemRequestController {
 
     @PostMapping
     public ItemRequestDto addRequest(@RequestHeader(HEADER_USER_ID) long requesterId,
-                                     @Valid @RequestBody ItemRequestDto itemRequestDto) {
+                                     @RequestBody ItemRequestDto itemRequestDto) {
         return itemRequestService.addRequest(itemRequestDto, requesterId);
     }
 
@@ -30,10 +28,10 @@ public class ItemRequestController {
     }
 
     @GetMapping("/all")
-    public List<ItemRequestDto> getAllRequests(@PositiveOrZero @RequestParam(value = "from", required = false,
-                                                defaultValue = "0") int from,
-                                               @Positive @RequestParam(value = "size", required = false,
-                                                defaultValue = "20") int size,
+    public List<ItemRequestDto> getAllRequests(@RequestParam(value = "from", required = false,
+            defaultValue = "0") int from,
+                                               @RequestParam(value = "size", required = false,
+                                                       defaultValue = "20") int size,
                                                @RequestHeader(HEADER_USER_ID) long requesterId) {
         return itemRequestService.getAllRequests(requesterId, from, size);
     }

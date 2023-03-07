@@ -9,7 +9,7 @@ import ru.practicum.item.Item;
 import ru.practicum.user.User;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,6 @@ public class ItemRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "request_id")
     private long id;
-    @NotBlank
     @Column(name = " request_description")
     private String description;
     @ManyToOne

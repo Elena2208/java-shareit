@@ -1,6 +1,6 @@
 package ru.practicum.mapper;
 
-import org.jetbrains.annotations.NotNull;
+
 import ru.practicum.booking.Booking;
 import ru.practicum.booking.BookingDto;
 import ru.practicum.booking.BookingDtoRequest;
@@ -21,7 +21,7 @@ public class BookingMapper {
         return booking;
     }
 
-    public static @NotNull BookingDto toBookingDto(Booking booking) {
+    public static BookingDto toBookingDto(Booking booking) {
         BookingDto bookingDto = new BookingDto();
         bookingDto.setId(booking.getId());
         bookingDto.setStart(booking.getStart());
