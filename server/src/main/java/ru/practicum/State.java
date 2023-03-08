@@ -1,4 +1,4 @@
-package ru.practicum.booking;
+package ru.practicum;
 
 public enum State {
     ALL,
