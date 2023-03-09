@@ -2,8 +2,6 @@ package ru.practicum.booking;
 
 
 
-import ru.practicum.State;
-
 import java.util.List;
 
 public interface BookingService {

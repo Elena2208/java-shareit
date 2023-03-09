@@ -69,7 +69,7 @@ class BookingControllerTest {
     @Test
     void approveBooking() throws Exception {
         bookingDto.setStatus(BookingStatus.APPROVED);
-        ResponseEntity<Object> response = ResponseEntity.status(201).body(bookingDto);
+        ResponseEntity<Object> response = ResponseEntity.status(200).body(bookingDto);
         when(bookingClient.approve(1L, true, 1L)).thenReturn(response);
         mockMvc.perform(
                         patch("/bookings/{bookingId}", 1L)
@@ -85,7 +85,7 @@ class BookingControllerTest {
 
     @Test
     void getBooking() throws Exception {
-        ResponseEntity<Object> response = ResponseEntity.status(201).body(bookingDto);
+        ResponseEntity<Object> response = ResponseEntity.status(200).body(bookingDto);
         when(bookingClient.getBookingById(1L, 1L)).thenReturn(response);
         mockMvc.perform(
                         get("/bookings/{bookingId}", 1L)
@@ -101,7 +101,7 @@ class BookingControllerTest {
     @Test
     void getBookingByUserSorted() throws Exception {
         List<BookingDto> bookings = List.of(bookingDto);
-        ResponseEntity<Object> response = ResponseEntity.status(201).body(bookings);
+        ResponseEntity<Object> response = ResponseEntity.status(200).body(bookings);
         when(bookingClient.getBookingByUser(anyLong(), any(), anyInt(), anyInt())).thenReturn(response);
         mockMvc.perform(
                         get("/bookings")
@@ -115,7 +115,7 @@ class BookingControllerTest {
     @Test
     void getBookingsForItemOwner() throws Exception {
         List<BookingDto> bookings = List.of(bookingDto);
-        ResponseEntity<Object> response = ResponseEntity.status(201).body(bookings);
+        ResponseEntity<Object> response = ResponseEntity.status(200).body(bookings);
         when(bookingClient.getBookingByOwner(anyLong(), any(), anyInt(), anyInt())).thenReturn(response);
         mockMvc.perform(
                         get("/bookings/owner")

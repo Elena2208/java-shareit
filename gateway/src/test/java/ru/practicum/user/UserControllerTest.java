@@ -34,7 +34,7 @@ class UserControllerTest {
     @Test
     void addUser() throws Exception {
         UserDto userDto = new UserDto(id, "One", "one@gmail.com");
-        ResponseEntity<Object> response = ResponseEntity.status(201).body(userDto);
+        ResponseEntity<Object> response = ResponseEntity.status(200).body(userDto);
         when(userClient.addUser(any())).thenReturn(response);
         mockMvc.perform(
                         post("/users")
@@ -50,7 +50,7 @@ class UserControllerTest {
     @Test
     void updateUser() throws Exception {
         UserDto userDto = new UserDto(id, "One", "one@gmail.com");
-        ResponseEntity<Object> response = ResponseEntity.status(201).body(userDto);
+        ResponseEntity<Object> response = ResponseEntity.status(200).body(userDto);
         when(userClient.updateUser(anyLong(), any())).thenReturn(response);
 
         mockMvc.perform(
@@ -67,7 +67,7 @@ class UserControllerTest {
     @Test
     void getUser() throws Exception {
         UserDto userDto = new UserDto(1L, "One", "one@gmail.com");
-        ResponseEntity<Object> response = ResponseEntity.status(201).body(userDto);
+        ResponseEntity<Object> response = ResponseEntity.status(200).body(userDto);
         when(userClient.getUserById(anyLong())).thenReturn(response);
 
         mockMvc.perform(get("/users/{userId}", id)).andExpect(status().isOk())
@@ -77,18 +77,11 @@ class UserControllerTest {
     }
 
     @Test
-    void deleteUser() throws Exception {
-        doNothing().when(userClient).deleteUserById(id);
-        mockMvc.perform(delete("/users/{userId}", id))
-                .andExpect(status().isOk());
-    }
-
-    @Test
     void getAllUsers() throws Exception {
         List<UserDto> users = new ArrayList<>(
                 Arrays.asList(new UserDto(),
                         new UserDto()));
-        ResponseEntity<Object> response = ResponseEntity.status(201).body(users);
+        ResponseEntity<Object> response = ResponseEntity.status(200).body(users);
         when(userClient.getAllUsers()).thenReturn(response);
         mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())

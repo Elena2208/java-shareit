@@ -39,7 +39,7 @@ class ItemRequestControllerTest {
 
     @Test
     void addRequest() throws Exception {
-        ResponseEntity<Object> response = ResponseEntity.status(201).body(itemRequest1);
+        ResponseEntity<Object> response = ResponseEntity.status(200).body(itemRequest1);
         when(itemRequestClient.addRequest(any(), anyLong())).thenReturn(response);
 
         mockMvc.perform(
@@ -56,7 +56,7 @@ class ItemRequestControllerTest {
     @Test
     void getAllRequestsForRequester() throws Exception {
         List<ItemRequestDto> requests = List.of(itemRequest1);
-        ResponseEntity<Object> response = ResponseEntity.status(201).body(requests);
+        ResponseEntity<Object> response = ResponseEntity.status(200).body(requests);
         when(itemRequestClient.getAllRequestsForRequester(anyLong())).thenReturn(response);
 
         mockMvc.perform(
@@ -70,7 +70,7 @@ class ItemRequestControllerTest {
     @Test
     void getAllRequests() throws Exception {
         List<ItemRequestDto> requests = List.of(itemRequest1, itemRequest2);
-        ResponseEntity<Object> response = ResponseEntity.status(201).body(requests);
+        ResponseEntity<Object> response = ResponseEntity.status(200).body(requests);
         when(itemRequestClient.getAllRequests(anyLong(), anyInt(), anyInt())).thenReturn(response);
 
         mockMvc.perform(
@@ -83,7 +83,7 @@ class ItemRequestControllerTest {
 
     @Test
     void getOneRequest() throws Exception {
-        ResponseEntity<Object> response = ResponseEntity.status(201).body(itemRequest1);
+        ResponseEntity<Object> response = ResponseEntity.status(200).body(itemRequest1);
         when(itemRequestClient.getOneRequest(anyLong(), anyLong())).thenReturn(response);
         mockMvc.perform(
                         get("/requests/{requestId}", 1L)

@@ -43,7 +43,7 @@ class ItemControllerTest {
 
     @Test
     void addItem() throws Exception {
-        ResponseEntity<Object> response = ResponseEntity.status(201).body(itemDto);
+        ResponseEntity<Object> response = ResponseEntity.status(200).body(itemDto);
         when(itemClient.addItem(any(), anyLong())).thenReturn(response);
         mockMvc.perform(
                         post("/items")
@@ -59,7 +59,7 @@ class ItemControllerTest {
 
     @Test
     void updateItem() throws Exception {
-        ResponseEntity<Object> response = ResponseEntity.status(201).body(itemDto);
+        ResponseEntity<Object> response = ResponseEntity.status(200).body(itemDto);
         when(itemClient.updateItem(anyLong(),anyLong(),any())).thenReturn(response);
         mockMvc.perform(
                         patch("/items/{itemId}", itemDto.getId())
@@ -77,7 +77,7 @@ class ItemControllerTest {
 
     @Test
     void getItemEachUser() throws Exception {
-        ResponseEntity<Object> response = ResponseEntity.status(201).body(itemDtoDate);
+        ResponseEntity<Object> response = ResponseEntity.status(200).body(itemDtoDate);
         when(itemClient.getItemUser(anyLong(), anyLong())).thenReturn(response);
         mockMvc.perform(
                         get("/items/{itemId}", 1L)
@@ -92,7 +92,7 @@ class ItemControllerTest {
     void getItemOwnerUser() throws Exception {
 
         List<ItemDtoDate> items = List.of(itemDtoDate);
-        ResponseEntity<Object> response = ResponseEntity.status(201).body(items);
+        ResponseEntity<Object> response = ResponseEntity.status(200).body(items);
         when(itemClient.getAllItemByUser(anyLong(), anyInt(), anyInt())).thenReturn(response);
         mockMvc.perform(
                         get("/items")
@@ -105,7 +105,7 @@ class ItemControllerTest {
     @Test
     void getItemAvailableToRenter() throws Exception {
         List<ItemDto> items = List.of(itemDto);
-        ResponseEntity<Object> response = ResponseEntity.status(201).body(items);
+        ResponseEntity<Object> response = ResponseEntity.status(200).body(items);
         when(itemClient.search(anyString(), anyInt(), anyInt())).thenReturn(response);
 
         mockMvc.perform(
@@ -120,7 +120,7 @@ class ItemControllerTest {
 
     @Test
     void addCommentToItem() throws Exception {
-        ResponseEntity<Object> response = ResponseEntity.status(201).body(commentDto);
+        ResponseEntity<Object> response = ResponseEntity.status(200).body(commentDto);
         when(itemClient.addComment(1L, 1L, commentDto)).thenReturn(response);
         mockMvc.perform(
                         post("/items/{itemId}/comment", 1L)
